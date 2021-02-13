@@ -11,4 +11,22 @@ const profileGet = (db) => (req, res) => {
     .catch(err =>res.status(400).json("error getting in"))
 }
 
-module.exports = profileGet;
+const profileUpdate = (db) => (req, res) => {
+  const { id } = req.params;
+  const { name,age, pet } = req.body.formInput;
+  db('users')
+    .where({ id })
+    .update({ name })
+    .then(resp => {
+      if (resp) {
+        res.json("succesfully updated users!");
+      }
+      else res.status(400).json("unable to update!");
+    })
+    .catch(err => res.status(400).json("error updating user!"));
+}
+
+module.exports = {
+  profileGet,
+  profileUpdate
+};

@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt-nodejs');
@@ -15,7 +14,7 @@ const { db } = require('./model/database');
 //import route
 const register = require('./controllers/register');
 const signin = require('./controllers/sign');
-const profileGet = require('./controllers/profile');
+const {profileGet, profileUpdate} = require('./controllers/profile');
 const {image, callClarifaiApi} = require('./controllers/image');
 
 //routers
@@ -25,7 +24,9 @@ app.post('/register', register(bcrypt, db));
 
 app.post('/signin', signin(db,bcrypt));
 
-app.get('/profile/:id', profileGet(db));
+app.route('/profile/:id')
+  .get(profileGet(db))
+  .post(profileUpdate(db))
 
 app.put('/image', image(db));
 app.post('/imageurl', callClarifaiApi() );
@@ -34,4 +35,4 @@ let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3000;
 }
-app.listen(port);
+app.listen(port,()=> console.log(`app is running on port ${port}`));
