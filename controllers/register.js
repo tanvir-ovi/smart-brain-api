@@ -9,25 +9,25 @@ const register = (bcrypt, db) => (req, res) => {
   db.transaction(trx => {
     trx.insert({
       hash: hash,
-      email:email
+      email: email
     })
-    .into('login')
-    .returning('email')
-    .then(loginEmail => {
-      db('users')
-      .returning('*')
-      .insert({
-        name: name,
-        email: loginEmail[0],
-        joined: new Date().toLocaleString()
+      .into('login')
+      .returning('email')
+      .then(loginEmail => {
+        db('users')
+          .returning('*')
+          .insert({
+            name: name,
+            email: loginEmail[0],
+            joined: new Date().toLocaleString()
+          })
+          .then(user => res.json(user[0]))
       })
-      .then(user => res.json(user[0]))
-    })
-    .then(trx.commit)
-    .catch(trx.rollback)
+      .then(trx.commit)
+      .catch(trx.rollback)
     
   })
-  .catch(err => res.status(400).json("unable to join"))
+    .catch(err => res.status(400).json("heda"));
   
 }
 
